@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install deps
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r backend/requirements.txt
+          pip install pytest
+
+      - name: Init DB
+        run: |
+          source .venv/bin/activate
+          python -c "from app.db import init_db; init_db()"
+
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest backend/app/tests -q
+
+      - name: Mock review test
+        run: |
+          source .venv/bin/activate
+          python - <<'PY'
+          from app.review_engine import run_review
+          from app.llm_client import OllamaClient
+          diff = "diff --git a/src/app.py b/src/app.py\n@@ -1,3 +1,6 @@\n-foo=1\n+foo=2\n"
+          client = OllamaClient(mock=True)
+          res = run_review(diff, persona="mentor", client=client)
+          print("Mock review ok:", res)
+          PY
