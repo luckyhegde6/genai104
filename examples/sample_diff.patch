@@ -1,0 +1,11 @@
+diff --git a/src/app.py b/src/app.py
+index e69de29..b7a8c1a 100644
+--- a/src/app.py
++++ b/src/app.py
+@@ -0,0 +1,6 @@
++def f(x):
++    # TODO: fix name
++    x = x + 1
++    return x
++
++print(f(1))

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# hooks/pre-commit
+# Simple non-blocking pre-commit hook to run code-review in mock mode and print suggestions.
+set -e
+STAGED_DIFF=$(git diff --cached)
+if [ -z "$STAGED_DIFF" ]; then
+  exit 0
+fi
+
+echo "Running local code-review (mock mode) on staged diff..."
+python -m cli.crassist submit --diff - --persona strict --mock true <<'DIFF'
+$STAGED_DIFF
+DIFF
+
+# Keep commits non-blocking by default (return 0)
+exit 0
