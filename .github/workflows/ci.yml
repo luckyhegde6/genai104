@@ -28,7 +28,12 @@ jobs:
       - name: Init DB
         run: |
           source .venv/bin/activate
-          python -c "from app.db import init_db; init_db()"
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
+          python - <<'PY'
+          from backend.app.db import init_db
+          init_db()
+          print("DB initialized OK")
+          PY
 
       - name: Run tests
         run: |
