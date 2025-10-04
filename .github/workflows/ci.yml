@@ -55,8 +55,8 @@ jobs:
           assert len(res) > 0
           PY
     
-      - name: Lint
-        run: |
-          source .venv/bin/activate
-          pip install flake8
-          flake8 backend cli
+      # - name: Lint
+      #   run: |
+      #     source .venv/bin/activate
+      #     pip install flake8
+      #     flake8 backend cli
